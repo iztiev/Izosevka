@@ -1,0 +1,88 @@
+@font-face {
+    font-family: "Izosevka Web";
+    font-display: swap;
+    font-weight: 400;
+    font-stretch: normal;
+    font-style: normal;
+    src:
+        url("Izosevka-Webfonts/Izosevka-Regular.woff2") format("woff2"),
+        url("Izosevka/Izosevka-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Izosevka Web";
+    font-display: swap;
+    font-weight: 400;
+    font-stretch: expanded;
+    font-style: normal;
+    src:
+        url("Izosevka-Webfonts/Izosevka-Extended.woff2") format("woff2"),
+        url("Izosevka/Izosevka-Extended.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Izosevka Web";
+    font-display: swap;
+    font-weight: 400;
+    font-stretch: normal;
+    font-style: italic;
+    src:
+        url("Izosevka-Webfonts/Izosevka-Italic.woff2") format("woff2"),
+        url("Izosevka/Izosevka-Italic.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Izosevka Web";
+    font-display: swap;
+    font-weight: 400;
+    font-stretch: expanded;
+    font-style: italic;
+    src:
+        url("Izosevka-Webfonts/Izosevka-ExtendedItalic.woff2") format("woff2"),
+        url("Izosevka/Izosevka-ExtendedItalic.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Izosevka Web";
+    font-display: swap;
+    font-weight: 700;
+    font-stretch: normal;
+    font-style: normal;
+    src:
+        url("Izosevka-Webfonts/Izosevka-Bold.woff2") format("woff2"),
+        url("Izosevka/Izosevka-Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Izosevka Web";
+    font-display: swap;
+    font-weight: 700;
+    font-stretch: expanded;
+    font-style: normal;
+    src:
+        url("Izosevka-Webfonts/Izosevka-ExtendedBold.woff2") format("woff2"),
+        url("Izosevka/Izosevka-ExtendedBold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Izosevka Web";
+    font-display: swap;
+    font-weight: 700;
+    font-stretch: normal;
+    font-style: italic;
+    src:
+        url("Izosevka-Webfonts/Izosevka-BoldItalic.woff2") format("woff2"),
+        url("Izosevka/Izosevka-BoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Izosevka Web";
+    font-display: swap;
+    font-weight: 700;
+    font-stretch: expanded;
+    font-style: italic;
+    src:
+        url("Izosevka-Webfonts/Izosevka-ExtendedBoldItalic.woff2")
+            format("woff2"),
+        url("Izosevka/Izosevka-ExtendedBoldItalic.ttf") format("truetype");
+}
