@@ -10,7 +10,6 @@ exportGlyphNames = true
 
     [buildPlans.Izosevka.variants.design]
     zero = "slashed"
-    a = "single-storey-earless-corner-tailed"
     b = "toothless-corner-serifless"
     d = "toothless-corner-serifless"
     g = "single-storey-earless-corner"
@@ -18,7 +17,6 @@ exportGlyphNames = true
     p = "earless-corner-serifless"
     q = "earless-corner-straight-serifless"
     r = "earless-corner-serifless"
-    cyrl-a = "single-storey-earless-corner-tailed"
     cyrl-er = "earless-corner-serifless"
 
 [buildPlans.Izosevka.weights.Regular]

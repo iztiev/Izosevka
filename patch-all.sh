@@ -46,7 +46,7 @@ find "$FONTS_DIR" \( -iname '*.ttf' -o -iname '*.otf' \) -print0 | while IFS= re
 
   # Run the fontforge patcher script on the font file
   # Add any specific options for font-patcher here if needed (e.g., --complete, --windows, etc.)
-  fontforge -script "$FONT_PATCHER_SCRIPT" "$font_file"
+  fontforge -script "$FONT_PATCHER_SCRIPT" --complete "$font_file"
 
   # Check the exit status of the fontforge command
   if [ $? -eq 0 ]; then
