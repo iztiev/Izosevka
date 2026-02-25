@@ -2,7 +2,7 @@
 
 This is my customization variant for [Iosevka](https://github.com/be5invis/Iosevka) fonts that I use in my terminal and editors.
 
-It is based on SS14 JetBrains Mono style, with some symbols replaced for minimalistic look. Only TTF fonts are built.
+It is based on SS14 JetBrains Mono style, with some symbols replaced for minimalistic look. Only TTF fonts (hinted and unhinted) are built.
 
 ## NixOS
 

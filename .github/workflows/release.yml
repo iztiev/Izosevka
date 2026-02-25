@@ -57,13 +57,13 @@ jobs:
           zip -j "Izosevka-${TAG}-TTF-Unhinted.zip" out/TTF-Unhinted/*.ttf
 
       - name: Create GitHub release
+        working-directory: izosevka
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ github.ref_name }}"
           gh release create "$TAG" \
-            --repo "${{ github.repository }}" \
             --title "Izosevka $TAG" \
             --notes "Based on [Iosevka $TAG](https://github.com/be5invis/Iosevka/releases/tag/$TAG)." \
-            "Izosevka-${TAG}-TTF.zip" \
-            "Izosevka-${TAG}-TTF-Unhinted.zip"
+            "$GITHUB_WORKSPACE/Izosevka-${TAG}-TTF.zip" \
+            "$GITHUB_WORKSPACE/Izosevka-${TAG}-TTF-Unhinted.zip"
