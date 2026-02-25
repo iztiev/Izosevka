@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build and release (e.g. v34.1.0)'
+        required: true
 
 jobs:
   build-and-release:
@@ -18,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: be5invis/Iosevka
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.event.inputs.tag || github.ref_name }}
           path: iosevka
 
       - uses: actions/setup-node@v4
@@ -37,13 +42,21 @@ jobs:
       - name: Copy build plan
         run: cp private-build-plans.toml iosevka/private-build-plans.toml
 
+      - name: Restore TTF cache
+        id: cache-ttfs
+        uses: actions/cache@v4
+        with:
+          path: iosevka/dist/IosevkaIzosevka
+          key: ttf-${{ github.event.inputs.tag || github.ref_name }}-${{ hashFiles('private-build-plans.toml') }}
+
       - name: Build TTFs
+        if: steps.cache-ttfs.outputs.cache-hit != 'true'
         run: npm run build -- ttf::IosevkaIzosevka
         working-directory: iosevka
 
       - name: Pack archives
         run: |
-          TAG="${{ github.ref_name }}"
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
           DIST="iosevka/dist/IosevkaIzosevka"
           for dir in TTF TTF-Unhinted; do
             mkdir -p "out/${dir}"
@@ -58,7 +71,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
-          TAG="${{ github.ref_name }}"
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
           gh release create "$TAG" \
             --title "Izosevka $TAG" \
             --notes "Based on [Iosevka $TAG](https://github.com/be5invis/Iosevka/releases/tag/$TAG)." \
