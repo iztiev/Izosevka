@@ -47,8 +47,14 @@ jobs:
         run: |
           TAG="${{ github.ref_name }}"
           DIST="iosevka/dist/IosevkaIzosevka"
-          find "${DIST}/TTF"          -name "*.ttf" | xargs zip -j "Izosevka-${TAG}-TTF.zip"
-          find "${DIST}/TTF-Unhinted" -name "*.ttf" | xargs zip -j "Izosevka-${TAG}-TTF-Unhinted.zip"
+          for dir in TTF TTF-Unhinted; do
+            mkdir -p "out/${dir}"
+            for f in "${DIST}/${dir}/"*.ttf; do
+              cp "$f" "out/${dir}/$(basename "$f" | sed 's/IosevkaIzosevka/Izosevka/')"
+            done
+          done
+          zip -j "Izosevka-${TAG}-TTF.zip"          out/TTF/*.ttf
+          zip -j "Izosevka-${TAG}-TTF-Unhinted.zip" out/TTF-Unhinted/*.ttf
 
       - name: Create GitHub release
         env:
@@ -56,6 +62,7 @@ jobs:
         run: |
           TAG="${{ github.ref_name }}"
           gh release create "$TAG" \
+            --repo "${{ github.repository }}" \
             --title "Izosevka $TAG" \
             --notes "Based on [Iosevka $TAG](https://github.com/be5invis/Iosevka/releases/tag/$TAG)." \
             "Izosevka-${TAG}-TTF.zip" \
