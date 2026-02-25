@@ -13,8 +13,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          path: izosevka
 
       - name: Check out Iosevka at matching tag
         uses: actions/checkout@v4
@@ -37,10 +35,10 @@ jobs:
         working-directory: iosevka
 
       - name: Copy build plan
-        run: cp izosevka/private-build-plans.toml iosevka/private-build-plans.toml
+        run: cp private-build-plans.toml iosevka/private-build-plans.toml
 
       - name: Build TTFs
-        run: npm run build -- ttf::IosevkaIzosevka ttf-unhinted::IosevkaIzosevka
+        run: npm run build -- ttf::IosevkaIzosevka
         working-directory: iosevka
 
       - name: Pack archives
@@ -54,10 +52,8 @@ jobs:
             done
           done
           zip -j "Izosevka-${TAG}-TTF.zip"          out/TTF/*.ttf
-          zip -j "Izosevka-${TAG}-TTF-Unhinted.zip" out/TTF-Unhinted/*.ttf
 
       - name: Create GitHub release
-        working-directory: izosevka
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -65,5 +61,4 @@ jobs:
           gh release create "$TAG" \
             --title "Izosevka $TAG" \
             --notes "Based on [Iosevka $TAG](https://github.com/be5invis/Iosevka/releases/tag/$TAG)." \
-            "$GITHUB_WORKSPACE/Izosevka-${TAG}-TTF.zip" \
-            "$GITHUB_WORKSPACE/Izosevka-${TAG}-TTF-Unhinted.zip"
+            "Izosevka-${TAG}-TTF.zip"
