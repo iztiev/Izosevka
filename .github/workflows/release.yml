@@ -26,28 +26,32 @@ jobs:
           ref: ${{ github.event.inputs.tag || github.ref_name }}
           path: iosevka
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-          cache: 'npm'
-          cache-dependency-path: iosevka/package-lock.json
-
-      - name: Install system dependencies
-        run: sudo apt-get install -y ttfautohint
-
-      - name: Install npm dependencies
-        run: npm ci
-        working-directory: iosevka
-
-      - name: Copy build plan
-        run: cp private-build-plans.toml iosevka/private-build-plans.toml
-
       - name: Restore TTF cache
         id: cache-ttfs
         uses: actions/cache@v4
         with:
           path: iosevka/dist/IosevkaIzosevka
           key: ttf-${{ github.event.inputs.tag || github.ref_name }}-${{ hashFiles('private-build-plans.toml') }}
+
+      - uses: actions/setup-node@v4
+        if: steps.cache-ttfs.outputs.cache-hit != 'true'
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+          cache-dependency-path: iosevka/package-lock.json
+
+      - name: Install system dependencies
+        if: steps.cache-ttfs.outputs.cache-hit != 'true'
+        run: sudo apt-get install -y ttfautohint
+
+      - name: Install npm dependencies
+        if: steps.cache-ttfs.outputs.cache-hit != 'true'
+        run: npm ci
+        working-directory: iosevka
+
+      - name: Copy build plan
+        if: steps.cache-ttfs.outputs.cache-hit != 'true'
+        run: cp private-build-plans.toml iosevka/private-build-plans.toml
 
       - name: Build TTFs
         if: steps.cache-ttfs.outputs.cache-hit != 'true'
