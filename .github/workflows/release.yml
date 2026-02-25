@@ -39,20 +39,16 @@ jobs:
       - name: Copy build plan
         run: cp izosevka/private-build-plans.toml iosevka/private-build-plans.toml
 
-      - name: Build all variants
-        run: npm run build -- contents::IosevkaIzosevka
+      - name: Build TTFs
+        run: npm run build -- ttf::IosevkaIzosevka ttf-unhinted::IosevkaIzosevka
         working-directory: iosevka
 
       - name: Pack archives
         run: |
           TAG="${{ github.ref_name }}"
           DIST="iosevka/dist/IosevkaIzosevka"
-          find "${DIST}/TTF"              -name "*.ttf"          | xargs zip -j "Izosevka-${TAG}-TTF.zip"
-          find "${DIST}/TTF-Unhinted"     -name "*.ttf"          | xargs zip -j "Izosevka-${TAG}-TTF-Unhinted.zip"
-          find "${DIST}/WOFF2"            -name "*.woff2"        | xargs zip -j "Izosevka-${TAG}-WOFF2.zip"
-          find "${DIST}/WOFF2-Unhinted"   -name "*.woff2"        | xargs zip -j "Izosevka-${TAG}-WOFF2-Unhinted.zip"
-          find "${DIST}/WebFont"          -name "*.woff2" -o -name "*.css" | xargs zip -j "Izosevka-${TAG}-WebFont.zip"
-          find "${DIST}/WebFont-Unhinted" -name "*.woff2" -o -name "*.css" | xargs zip -j "Izosevka-${TAG}-WebFont-Unhinted.zip"
+          find "${DIST}/TTF"          -name "*.ttf" | xargs zip -j "Izosevka-${TAG}-TTF.zip"
+          find "${DIST}/TTF-Unhinted" -name "*.ttf" | xargs zip -j "Izosevka-${TAG}-TTF-Unhinted.zip"
 
       - name: Create GitHub release
         env:
@@ -63,8 +59,4 @@ jobs:
             --title "Izosevka $TAG" \
             --notes "Based on [Iosevka $TAG](https://github.com/be5invis/Iosevka/releases/tag/$TAG)." \
             "Izosevka-${TAG}-TTF.zip" \
-            "Izosevka-${TAG}-TTF-Unhinted.zip" \
-            "Izosevka-${TAG}-WOFF2.zip" \
-            "Izosevka-${TAG}-WOFF2-Unhinted.zip" \
-            "Izosevka-${TAG}-WebFont.zip" \
-            "Izosevka-${TAG}-WebFont-Unhinted.zip"
+            "Izosevka-${TAG}-TTF-Unhinted.zip"

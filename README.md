@@ -2,7 +2,7 @@
 
 This is my customization variant for [Iosevka](https://github.com/be5invis/Iosevka) fonts that I use in my terminal and editors.
 
-**Iosevka** font is built with version `33.2.1`
+It is based on SS14 JetBrains Mono style, with some symbols replaced for minimalistic look. Only TTF fonts are built.
 
 ## NixOS
 
