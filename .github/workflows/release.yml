@@ -1,0 +1,70 @@
+name: Build and release Izosevka
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: izosevka
+
+      - name: Check out Iosevka at matching tag
+        uses: actions/checkout@v4
+        with:
+          repository: be5invis/Iosevka
+          ref: ${{ github.ref_name }}
+          path: iosevka
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+          cache-dependency-path: iosevka/package-lock.json
+
+      - name: Install system dependencies
+        run: sudo apt-get install -y ttfautohint
+
+      - name: Install npm dependencies
+        run: npm ci
+        working-directory: iosevka
+
+      - name: Copy build plan
+        run: cp izosevka/private-build-plans.toml iosevka/private-build-plans.toml
+
+      - name: Build all variants
+        run: npm run build -- contents::IosevkaIzosevka
+        working-directory: iosevka
+
+      - name: Pack archives
+        run: |
+          TAG="${{ github.ref_name }}"
+          DIST="iosevka/dist/IosevkaIzosevka"
+          find "${DIST}/TTF"              -name "*.ttf"          | xargs zip -j "Izosevka-${TAG}-TTF.zip"
+          find "${DIST}/TTF-Unhinted"     -name "*.ttf"          | xargs zip -j "Izosevka-${TAG}-TTF-Unhinted.zip"
+          find "${DIST}/WOFF2"            -name "*.woff2"        | xargs zip -j "Izosevka-${TAG}-WOFF2.zip"
+          find "${DIST}/WOFF2-Unhinted"   -name "*.woff2"        | xargs zip -j "Izosevka-${TAG}-WOFF2-Unhinted.zip"
+          find "${DIST}/WebFont"          -name "*.woff2" -o -name "*.css" | xargs zip -j "Izosevka-${TAG}-WebFont.zip"
+          find "${DIST}/WebFont-Unhinted" -name "*.woff2" -o -name "*.css" | xargs zip -j "Izosevka-${TAG}-WebFont-Unhinted.zip"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          gh release create "$TAG" \
+            --title "Izosevka $TAG" \
+            --notes "Based on [Iosevka $TAG](https://github.com/be5invis/Iosevka/releases/tag/$TAG)." \
+            "Izosevka-${TAG}-TTF.zip" \
+            "Izosevka-${TAG}-TTF-Unhinted.zip" \
+            "Izosevka-${TAG}-WOFF2.zip" \
+            "Izosevka-${TAG}-WOFF2-Unhinted.zip" \
+            "Izosevka-${TAG}-WebFont.zip" \
+            "Izosevka-${TAG}-WebFont-Unhinted.zip"
