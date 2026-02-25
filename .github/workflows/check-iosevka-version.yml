@@ -1,0 +1,58 @@
+name: Check for new Iosevka version
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-and-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest Iosevka release
+        id: upstream
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(gh release view --repo be5invis/Iosevka --json tagName -q .tagName)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if version already tagged
+        id: tag_check
+        run: |
+          VERSION="${{ steps.upstream.outputs.version }}"
+          if git tag --list | grep -qx "$VERSION"; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: cachix/install-nix-action@v30
+        if: steps.tag_check.outputs.exists == 'false'
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Update nixpkgs input
+        if: steps.tag_check.outputs.exists == 'false'
+        run: nix flake update nixpkgs
+
+      - name: Commit, tag, and push new version
+        if: steps.tag_check.outputs.exists == 'false'
+        env:
+          VERSION: ${{ steps.upstream.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add flake.lock
+          git commit -m "chore: bump Iosevka to $VERSION"
+          git tag -a "$VERSION" -m "Iosevka $VERSION"
+          git push origin main
+          git push origin "$VERSION"
