@@ -42,7 +42,9 @@ jobs:
 
       - name: Install system dependencies
         if: steps.cache-ttfs.outputs.cache-hit != 'true'
-        run: sudo apt-get install -y ttfautohint
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ttfautohint
 
       - name: Install npm dependencies
         if: steps.cache-ttfs.outputs.cache-hit != 'true'
